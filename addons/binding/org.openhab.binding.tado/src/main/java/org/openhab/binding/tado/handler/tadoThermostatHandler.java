@@ -52,9 +52,9 @@ public class tadoThermostatHandler extends BaseThingHandler {
 
     private Logger logger = LoggerFactory.getLogger(tadoThermostatHandler.class);
 
-    protected String accessToken;
-    protected String refreshToken;
-    protected long tokenExpiration = 0;
+    protected static String accessToken;
+    protected static String refreshToken;
+    protected static long tokenExpiration = 0;
 
     protected Client tadoClient = ClientBuilder.newClient();
     protected WebTarget tadoTarget = tadoClient.target(API_URI);
