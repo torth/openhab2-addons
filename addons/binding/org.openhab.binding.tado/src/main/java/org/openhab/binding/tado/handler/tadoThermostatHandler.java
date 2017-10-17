@@ -261,7 +261,8 @@ public class tadoThermostatHandler extends BaseThingHandler {
 
     public boolean refreshToken() {
         Response response = authTarget.queryParam("client_id", CLIENT_ID).queryParam("client_secret", CLIENT_SECRET)
-                .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).request().get();
+                .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).request()
+                .header("Referer", "https://my.tado.com/").post(Entity.json("{}"));
 
         logger.trace("Authenticating: Response : {}", response.getStatusInfo());
 
@@ -315,7 +316,6 @@ public class tadoThermostatHandler extends BaseThingHandler {
                 .queryParam("grant_type", "password").queryParam("scope", "home.user").request()
                 .header("Referer", "https://my.tado.com/").post(Entity.json("{}"));
 
-        logger.trace(response.toString());
         logger.trace("Authenticating: Response : {}", response.getStatusInfo());
 
         if (response != null) {
