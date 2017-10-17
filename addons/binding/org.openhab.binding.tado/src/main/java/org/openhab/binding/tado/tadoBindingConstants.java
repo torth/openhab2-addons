@@ -14,12 +14,14 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * used across the whole binding.
  *
  * @author Ben Woodford - Initial contribution
+ * @author bennYx0x - Refactoring for the new Tado public preview API
  */
 public class tadoBindingConstants {
 
     public static final String BINDING_ID = "tado";
 
-    public static final String CLIENT_ID = "tado-webapp";
+    public static final String CLIENT_ID = "public-api-preview";
+    public static final String CLIENT_SECRET = "4HJGRffVR8xb3XdEUQpjgZ1VplJi6Xgw";
 
     public final static String API_NAME = "Tado API";
     public final static String API_VERSION = "api/v2/";

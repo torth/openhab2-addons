@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
@@ -45,6 +46,7 @@ import com.google.gson.JsonParser;
  * sent to one of the channels.
  *
  * @author Ben Woodford - Initial contribution
+ * @author bennYx0x - Refactoring for the new Tado public preview API
  */
 public class tadoThermostatHandler extends BaseThingHandler {
 
@@ -258,8 +260,8 @@ public class tadoThermostatHandler extends BaseThingHandler {
     }
 
     public boolean refreshToken() {
-        Response response = authTarget.queryParam("client_id", CLIENT_ID).queryParam("grant_type", "refresh_token")
-                .queryParam("refresh_token", refreshToken).request().get();
+        Response response = authTarget.queryParam("client_id", CLIENT_ID).queryParam("client_secret", CLIENT_SECRET)
+                .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).request().get();
 
         logger.trace("Authenticating: Response : {}", response.getStatusInfo());
 
@@ -309,9 +311,11 @@ public class tadoThermostatHandler extends BaseThingHandler {
 
     protected ThingStatusDetail authenticate(String email, String password) {
         Response response = authTarget.queryParam("username", email).queryParam("password", password)
-                .queryParam("client_id", CLIENT_ID).queryParam("grant_type", "password")
-                .queryParam("scope", "home.user").request().get();
+                .queryParam("client_id", CLIENT_ID).queryParam("client_secret", CLIENT_SECRET)
+                .queryParam("grant_type", "password").queryParam("scope", "home.user").request()
+                .header("Referer", "https://my.tado.com/").post(Entity.json("{}"));
 
+        logger.trace(response.toString());
         logger.trace("Authenticating: Response : {}", response.getStatusInfo());
 
         if (response != null) {
