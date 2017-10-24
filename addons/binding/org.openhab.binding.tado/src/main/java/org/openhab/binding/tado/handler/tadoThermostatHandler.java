@@ -176,7 +176,7 @@ public class tadoThermostatHandler extends BaseThingHandler {
     }
 
     protected Builder prepareWebTargetRequest(WebTarget target) {
-        if (tokenExpiration < System.currentTimeMillis() - (30 * 1000)) {
+        if (System.currentTimeMillis() > (tokenExpiration - (30 * 1000))) {
             logger.trace("Refreshing Bearer Token");
             refreshToken();
         }
