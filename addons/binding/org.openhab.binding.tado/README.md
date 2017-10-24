@@ -12,9 +12,10 @@ The syntax for the Things file is as follows:
 
 ````
 tado:thermostat:bedroom [ email="EMAIL", password="PASSWORD", homeId=HOMEID, zoneId=ZONEID, useCelsius=true ]
-optional parameter: refreshInterval=x , where x in seconds
 ````
-
+````
+optional parameter for the thing: refreshInterval=x , where x in seconds
+````
 If you'd prefer to use Fahrenheit set useCelsius to false, but I've only tested this in Celsius so no promises it'll work well.
 
 Enter your email and password for Tado, along with Home and Zone IDs. Set the 'home' bit of the Thing to denote this Thing's ID. 
