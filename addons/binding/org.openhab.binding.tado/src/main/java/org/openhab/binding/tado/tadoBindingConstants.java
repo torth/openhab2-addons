@@ -42,6 +42,7 @@ public class tadoBindingConstants {
     public static final String ZONES = "zones";
     public static final String ZONE_ID_PATH = "/{zoneId}/";
     public static final String STATE = "state";
+    public static final String OVERLAY = "overlay";
 
     // List of all Thing Type UIDs
     public final static ThingTypeUID THING_TYPE_THERMOSTAT = new ThingTypeUID(BINDING_ID, "thermostat");
@@ -59,5 +60,9 @@ public class tadoBindingConstants {
 
     public final static String HOME_ID = "homeId";
     public final static String ZONE_ID = "zoneId";
+
+    public final static String MANUAL_MODE = "MANUAL";
+    public final static String POWER_ON = "ON";
+    public final static String POWER_OFF = "OFF";
 
 }

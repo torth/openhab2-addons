@@ -112,14 +112,12 @@
         <item-type>Switch</item-type>
         <label>Heating State</label>
         <description>Current state (ON/OFF) of heating</description>
-        <state readOnly="true"></state>
     </channel-type>
     
     <channel-type id="targetTemperature">
         <item-type>Number</item-type>
         <label>Target Temperature</label>
         <description>Current Target Temperature</description>
-        <state readOnly="true"></state>
     </channel-type>
 
 </thing:thing-descriptions>

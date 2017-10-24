@@ -6,6 +6,6 @@
 
     <name>tado Binding</name>
     <description>Binding for the tado thermostat</description>
-    <author>Ben Woodford</author>
+    <author>Ben Woodford, Benjamin Meyer</author>
 
 </binding:binding>

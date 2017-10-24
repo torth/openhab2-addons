@@ -1,5 +1,7 @@
 package org.openhab.binding.tado.internal.protocol;
 
+import static org.openhab.binding.tado.tadoBindingConstants.*;
+
 import java.math.BigDecimal;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
@@ -16,8 +18,8 @@ public class ZoneState {
     // Maybe change to boolean for manual and boolean for zone power?
 
     public String getMode() {
-        if (overlayType != null && overlayType.equals("MANUAL")) {
-            return "MANUAL";
+        if (overlayType != null && overlayType.equals(MANUAL_MODE)) {
+            return MANUAL_MODE;
         } else {
             return tadoMode;
         }
@@ -31,14 +33,14 @@ public class ZoneState {
 
     public OnOffType getLinkState() {
         if (link != null && link.state != null) {
-            return link.state.equals("ON") ? OnOffType.ON : OnOffType.OFF;
+            return link.state.equals(POWER_ON) ? OnOffType.ON : OnOffType.OFF;
         } else {
             return OnOffType.OFF;
         }
     }
 
     public OnOffType getHeatingState() {
-        if (setting != null && setting.power != null && setting.power.equals("ON")) {
+        if (setting != null && setting.getPower() != null && setting.getPower().equals(POWER_ON)) {
             return OnOffType.ON;
         } else {
             return OnOffType.OFF;
@@ -46,8 +48,8 @@ public class ZoneState {
     }
 
     public BigDecimal getTargetTemperature(boolean useCelsius) {
-        if (setting != null && setting.temperature != null) {
-            return setting.temperature.getValue(useCelsius);
+        if (setting != null && setting.getTemperature() != null) {
+            return setting.getTemperature().getValue(useCelsius);
         } else {
             return new BigDecimal(0);
         }
