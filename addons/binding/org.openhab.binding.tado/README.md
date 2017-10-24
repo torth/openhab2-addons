@@ -1,5 +1,5 @@
 # Tado Thermostat Binding
-Currently this binding only supports Tado radioator thermostats (mostly because I don't own an A/C unit to test the Tado A/C one with, or any of their pure thermostats). Maybe later I (or someone else) can add that in though.
+Currently this binding only supports Tado radiator thermostats (mostly because I don't own an A/C unit to test the Tado A/C one with, or any of their pure thermostats). Maybe later I (or someone else) can add that in though.
 
 ## Setup
 Setup is a bit complicated, as you have to look for your Home ID and Zone ID. The easiest way to find your Home ID is to open up [https://my.tado.com](https://my.tado.com) and login. Once you've done so, open up the developer tools for your browser (F12 in Chrome for example) and go to the Network tab. Refresh the page and it should fill with requests.
@@ -21,16 +21,16 @@ Enter your email and password for Tado, along with Home and Zone IDs. Set the 'h
 A sample item list can be found below.
 
 ````
-String Mode "Mode" { channel="tado:thermostat:home:mode" }
-Number Humidity "Humidity" { channel="tado:thermostat:home:humidity" }
-Number InsideTemperature "Inside Temperature" { channel="tado:thermostat:home:insideTemperature" }
-Number OutsideTemperature "Outside Temperature" { channel="tado:thermostat:home:outsideTemperature" }
-Number SolarIntensity "Solar Intensity" { channel="tado:thermostat:home:solarIntensity" }
-String WeatherState "Weather State" { channel="tado:thermostat:home:weatherState" }
-String LinkState "Link State" { channel="tado:thermostat:home:linkState" }
-String HeatingState "Heating State" { channel="tado:thermostat:home:heatingState" }
-Number TargetTemperature "Target Temperature" { channel="tado:thermostat:home:targetTemperature" }
-Switch ServerStatus "Server Status" { channel="tado:thermostat:home:serverStatus" }
+String Mode "Mode" { channel="tado:thermostat:bedroom:mode" }
+Number Humidity "Humidity" { channel="tado:thermostat:bedroom:humidity" }
+Number InsideTemperature "Inside Temperature" { channel="tado:thermostat:bedroom:insideTemperature" }
+Number OutsideTemperature "Outside Temperature" { channel="tado:thermostat:bedroom:outsideTemperature" }
+Number SolarIntensity "Solar Intensity" { channel="tado:thermostat:bedroom:solarIntensity" }
+String WeatherState "Weather State" { channel="tado:thermostat:bedroom:weatherState" }
+String LinkState "Link State" { channel="tado:thermostat:bedroom:linkState" }
+String HeatingState "Heating State" { channel="tado:thermostat:bedroom:heatingState" }
+Number TargetTemperature "Target Temperature" { channel="tado:thermostat:bedroom:targetTemperature" }
+Switch ServerStatus "Server Status" { channel="tado:thermostat:bedroom:serverStatus" }
 ````
 
 ## Issues
