@@ -32,8 +32,14 @@ String WeatherState "Weather State" { channel="tado:thermostat:bedroom:weatherSt
 String LinkState "Link State" { channel="tado:thermostat:bedroom:linkState" }
 String HeatingState "Heating State" { channel="tado:thermostat:bedroom:heatingState" }
 Number TargetTemperature "Target Temperature" { channel="tado:thermostat:bedroom:targetTemperature" }
+Number TerminationTimer "Termination Timer for Manual Mode" { channel="tado:thermostat:bedroom:terminationTimer" }
 Switch ServerStatus "Server Status" { channel="tado:thermostat:bedroom:serverStatus" }
 ````
+
+Information regarding Termination Timer:
+  - Number value in Minutes
+  - Value 0 represents infinite (which is the default value for the item)
+  - Value -1 represents termination of Manual Mode until the next change of Tado Mode
 
 ## Issues
 
