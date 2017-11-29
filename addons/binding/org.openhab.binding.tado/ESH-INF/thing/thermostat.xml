@@ -18,6 +18,7 @@
             <channel id="linkState" typeId="linkState" />
             <channel id="heatingState" typeId="heatingState" />
             <channel id="targetTemperature" typeId="targetTemperature" />
+            <channel id="terminationTimer" typeId="terminationTimer" />
             <channel id="serverStatus" typeId="serverStatus" />
         </channels>
         
@@ -62,7 +63,7 @@
     <channel-type id="mode">
         <item-type>String</item-type>
         <label>Mode</label>
-        <description>"AUTO", "AWAY", "MANUAL", "OFF"</description>
+        <description>The current mode</description>
         <state readOnly="true"></state>
     </channel-type>
     
@@ -118,6 +119,12 @@
         <item-type>Number</item-type>
         <label>Target Temperature</label>
         <description>Current Target Temperature</description>
+    </channel-type>
+    
+    <channel-type id="terminationTimer">
+        <item-type>Number</item-type>
+        <label>Termination Timer</label>
+        <description>Timer in Minutes until the MANUAL Mode gets terminated</description>
     </channel-type>
 
 </thing:thing-descriptions>

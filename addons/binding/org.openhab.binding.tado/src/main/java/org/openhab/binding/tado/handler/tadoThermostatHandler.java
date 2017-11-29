@@ -64,6 +64,7 @@ public class tadoThermostatHandler extends BaseThingHandler {
 
     // Initialize with default values at startup
     protected DecimalType targetTemperature;
+    protected DecimalType terminationTimer;
     protected OnOffType heatingState = OnOffType.OFF;
 
     protected Client tadoClient = ClientBuilder.newClient();
@@ -93,6 +94,8 @@ public class tadoThermostatHandler extends BaseThingHandler {
                 updateHeatingState(command);
             } else if (channelUID.getId().equals(CHANNEL_TARGET_TEMPERATURE) && command instanceof DecimalType) {
                 updateTargetTemperature(command);
+            } else if (channelUID.getId().equals(CHANNEL_TERMINATION_TIMER) && command instanceof DecimalType) {
+                updateTerminationTimer(command);
             } else if (channelUID.getId().equals(CHANNEL_INSIDE_TEMPERATURE) && command instanceof RefreshType) {
                 updateService.run();
             } else if (command instanceof RefreshType) {
@@ -176,6 +179,8 @@ public class tadoThermostatHandler extends BaseThingHandler {
     }
 
     protected Builder prepareWebTargetRequest(WebTarget target) {
+        // We substract 30 seconds from the tokenExpiration
+        // then we have a 30 seconds timespan to get a new refresh token
         if (System.currentTimeMillis() > (tokenExpiration - (30 * 1000))) {
             logger.trace("Refreshing Bearer Token");
             refreshToken();
@@ -387,15 +392,27 @@ public class tadoThermostatHandler extends BaseThingHandler {
 
         // Building json for PUT to Tado API
         ZoneSetting setting = new ZoneSetting();
-        setting.setType("HEATING");
+        setting.setType(HEATING);
 
+        // Create and define the termination json part
         ManualTerminationInfo termination = new ManualTerminationInfo();
-        termination.setType(MANUAL_MODE);
+        if (terminationTimer.doubleValue() == 0) {
+            termination.setType(MANUAL_MODE);
+        } else if (terminationTimer.doubleValue() == -1.0) {
+            termination.setType(TADO_MODE);
+        } else {
+            termination.setType(TIMER_MODE);
+            // Calculate the given minutes to seconds
+            termination.setDurationInSeconds(terminationTimer.longValue() * 60);
+        }
 
+        // Build the wrapping json and add the beforehand created json parts
         OverlayState zoneOverlay = new OverlayState();
         zoneOverlay.setSetting(setting);
         zoneOverlay.setTermination(termination);
 
+        // Create temperature json part and determine if we turn
+        // on or off and which temperature unit is used
         if (command.equals(OnOffType.ON)) {
             heatingState = OnOffType.ON;
             boolean useCelsius = (boolean) getConfig().get(USE_CELSIUS);
@@ -420,10 +437,17 @@ public class tadoThermostatHandler extends BaseThingHandler {
                         .header("Content-Type", "text/plain;charset=UTF-8").header("Referer", "https://my.tado.com/")
                         .header("Mime-Type", "application/json;charset=UTF-8").put(Entity.json(zoneOverlayJson));
 
-        // TODO better error handling
         if (response != null) {
-            String responsePayload = response.readEntity(String.class);
-            logger.trace(responsePayload);
+            if (response.getStatus() == 200 && response.hasEntity()) {
+                String responsePayload = response.readEntity(String.class);
+                logger.trace(responsePayload);
+            } else if (response.getStatus() == 401 && response.hasEntity()) {
+                logger.warn("Configuration Error: {}", response.readEntity(String.class));
+            } else if (response.getStatus() == 503 && response.hasEntity()) {
+                logger.warn("Communication Error: {}", response.readEntity(String.class));
+            } else {
+                logger.warn("Unknown Error with Status Code: {}", response.getStatus());
+            }
         }
     }
 
@@ -431,19 +455,31 @@ public class tadoThermostatHandler extends BaseThingHandler {
         boolean useCelsius = (boolean) getConfig().get(USE_CELSIUS);
         DecimalType newTargetTemperature = ((DecimalType) command);
 
+        // Validation for Celsius
         if (useCelsius && newTargetTemperature.doubleValue() < 5.0) {
             logger.info(
                     "Can't set target temperature below 5 degrees Celsius. Tado doesn't allow that. Given target temperature was {}.",
                     newTargetTemperature);
             return;
-        } else if (!useCelsius && newTargetTemperature.doubleValue() < 41.0) {
+        } else if (useCelsius && newTargetTemperature.doubleValue() > 25.0) {
             logger.info(
-                    "Can't set target temperature below 41 degrees Fahrenheit. Tado doesn't allow that. Given target temperature was {}.",
+                    "Can't set target temperature above 25 degrees Celsius. Tado doesn't allow that. Given target temperature was {}.",
                     newTargetTemperature);
             return;
         }
 
-        // TODO Check also max temperature
+        // Validation for Fahrenheit
+        if (!useCelsius && newTargetTemperature.doubleValue() < 41.0) {
+            logger.info(
+                    "Can't set target temperature below 41 degrees Fahrenheit. Tado doesn't allow that. Given target temperature was {}.",
+                    newTargetTemperature);
+            return;
+        } else if (!useCelsius && newTargetTemperature.doubleValue() > 77.0) {
+            logger.info(
+                    "Can't set target temperature above 77 degrees Fahrenheit. Tado doesn't allow that. Given target temperature was {}.",
+                    newTargetTemperature);
+            return;
+        }
 
         logger.debug("Set internal current target temperature {} to new value {}.", targetTemperature,
                 newTargetTemperature);
@@ -455,6 +491,23 @@ public class tadoThermostatHandler extends BaseThingHandler {
             logger.debug("Activate new target temperature: {} degrees.", targetTemperature);
             updateHeatingState(OnOffType.ON);
         }
+    }
+
+    private void updateTerminationTimer(@NonNull Command command) {
+        DecimalType newTerminationTimer = ((DecimalType) command);
+
+        if (newTerminationTimer.doubleValue() < 0) {
+            if (newTerminationTimer.doubleValue() != -1.0) {
+                logger.info(
+                        "Can't set termination timer to a negative value (Except for -1, for setting a timer until the next Tado mode change occurs. Given termination timer was {}.",
+                        newTerminationTimer);
+                return;
+            }
+        }
+
+        logger.debug("Set internal termination timer {} to new value {}.", terminationTimer, newTerminationTimer);
+        // Keep our internal termination timer sync
+        terminationTimer = newTerminationTimer;
     }
 
     private void activateTadoMode() {

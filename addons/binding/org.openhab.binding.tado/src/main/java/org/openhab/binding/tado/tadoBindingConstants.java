@@ -44,6 +44,8 @@ public class tadoBindingConstants {
     public static final String STATE = "state";
     public static final String OVERLAY = "overlay";
 
+    public static final String HEATING = "HEATING";
+
     // List of all Thing Type UIDs
     public final static ThingTypeUID THING_TYPE_THERMOSTAT = new ThingTypeUID(BINDING_ID, "thermostat");
 
@@ -56,12 +58,15 @@ public class tadoBindingConstants {
     public final static String CHANNEL_LINK_STATE = "linkState";
     public final static String CHANNEL_HEATING_STATE = "heatingState";
     public final static String CHANNEL_TARGET_TEMPERATURE = "targetTemperature";
+    public final static String CHANNEL_TERMINATION_TIMER = "terminationTimer";
     public final static String CHANNEL_SERVER_STATUS = "serverStatus";
 
     public final static String HOME_ID = "homeId";
     public final static String ZONE_ID = "zoneId";
 
     public final static String MANUAL_MODE = "MANUAL";
+    public final static String TADO_MODE = "TADO_MODE";
+    public final static String TIMER_MODE = "TIMER";
     public final static String POWER_ON = "ON";
     public final static String POWER_OFF = "OFF";
 
